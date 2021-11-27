@@ -1,12 +1,27 @@
-import { shallowMount } from "@vue/test-utils";
-import HelloWorld from "@/components/HelloWorld.vue";
+import { nextTick } from "@vue/runtime-core";
+import { mount } from "@vue/test-utils";
+import TimeLine from "../../src/components/TimeLine.vue";
+import { today, thisWeek, thisMonth } from "../../src/mocks";
 
-describe("HelloWorld.vue", () => {
-  it("renders props.msg when passed", () => {
-    const msg = "new message";
-    const wrapper = shallowMount(HelloWorld, {
-      props: { msg },
-    });
-    expect(wrapper.text()).toMatch(msg);
+describe("TimeLine", () => {
+  it("renders today post default", () => {
+    const wrapper = mount(TimeLine);
+    expect(wrapper.html()).toContain(today.created.format("Do MMM"));
+  });
+
+  it("update when period is clicked on this week", async () => {
+    const wrapper = mount(TimeLine);
+    await wrapper.get("[data-test='This Week']").trigger("click");
+
+    expect(wrapper.html()).toContain(today.created.format("Do MMM"));
+    expect(wrapper.html()).toContain(thisWeek.created.format("Do MMM"));
+  });
+  it("update when period is clicked on this month", async () => {
+    const wrapper = mount(TimeLine);
+    await wrapper.get("[data-test='This Month']").trigger("click");
+
+    expect(wrapper.html()).toContain(today.created.format("Do MMM"));
+    expect(wrapper.html()).toContain(thisWeek.created.format("Do MMM"));
+    expect(wrapper.html()).toContain(thisMonth.created.format("Do MMM"));
   });
 });
